@@ -11,6 +11,7 @@ public class SandLab
   public static final int WATER = 3;
   public static final int MUD = 4;
   public static final int GRASS = 5;
+  public static final int CLEAR = 6;
   
   //do not add any more fields below
   private int[][] grid;
@@ -27,7 +28,7 @@ public class SandLab
     String[] names;
     // Change this value to add more buttons
     //Step 4,6
-    names = new String[6];
+    names = new String[7];
     //Each value needs a name for the button
     names[EMPTY] = "Erase";
     names[METAL] = "Metal";
@@ -35,6 +36,8 @@ public class SandLab
     names[WATER] = "Water";
     names[MUD] = "Mud";
     names[GRASS] = "Grass";
+    names[CLEAR] = "CLEAR ALL";
+    
     
     //1. Add code to initialize the data member grid with same dimensions
     grid = new int[numRows][numCols];
@@ -46,7 +49,11 @@ public class SandLab
   private void locationClicked(int row, int col, int tool)
   {
     //2. Assign the values associated with the parameters to the grid
-	  if(grid[row][col] == EMPTY || tool == EMPTY)
+	  if (tool == CLEAR)
+	  {
+		  grid = new int[grid.length][grid[0].length];
+	  }
+	  else
 	  {
 		  grid[row][col] = tool;
 	  }
@@ -121,7 +128,6 @@ public class SandLab
 	//GRASS GROWING
 	if (element == GRASS && randRow != 0 && (grid[randRow - 1][randCol] == EMPTY || grid[randRow - 1][randCol] == WATER))
 	{
-		//if ((int)Math.random() * 2 == 1)
 		if ((int)(Math.random() * 100) == 1)
 		{
 			if(mudUnderMe(randRow, randCol))
