@@ -10,6 +10,7 @@ public class SandLab
   public static final int SAND = 2;
   public static final int WATER = 3;
   public static final int MUD = 4;
+  public static final int GRASS = 5;
   
   //do not add any more fields below
   private int[][] grid;
@@ -26,25 +27,29 @@ public class SandLab
     String[] names;
     // Change this value to add more buttons
     //Step 4,6
-    names = new String[5];
-    // Each value needs a name for the button
+    names = new String[6];
+    //Each value needs a name for the button
     names[EMPTY] = "Erase";
     names[METAL] = "Metal";
     names[SAND] = "Sand";
     names[WATER] = "Water";
     names[MUD] = "Mud";
+    names[GRASS] = "Grass";
     
     //1. Add code to initialize the data member grid with same dimensions
     grid = new int[numRows][numCols];
     
-    display = new SandDisplay("Falling Sand", numRows, numCols, names);
+    display = new SandDisplay("Sand Game", numRows, numCols, names);
   }
   
   //called when the user clicks on a location using the given tool
   private void locationClicked(int row, int col, int tool)
   {
     //2. Assign the values associated with the parameters to the grid
-	  grid[row][col] = tool;
+	  if(grid[row][col] == EMPTY || tool == EMPTY)
+	  {
+		  grid[row][col] = tool;
+	  }
   }
 
   //copies each element of grid into the display
@@ -56,21 +61,26 @@ public class SandLab
 	  {
 		  for(int col = 0; col < grid[0].length; col++)
 		  {
-			  if (grid[row][col] == METAL)
+			  int element = grid[row][col];
+			  if (element == METAL)
 			  {
 				  display.setColor(row, col, Color.GRAY);
 			  }
-			  else if (grid[row][col] == SAND)
+			  else if (element == SAND)
 			  {
 				  display.setColor(row, col, new Color(220, 160, 90));
 			  }
-			  else if (grid[row][col] == WATER)
+			  else if (element == WATER)
 			  {
 				  display.setColor(row, col, new Color(0, 100, 200));
 			  }
-			  else if (grid[row][col] == MUD)
+			  else if (element == MUD)
 			  {
 				  display.setColor(row, col, new Color(100, 70, 35));
+			  }
+			  else if (element == GRASS)
+			  {
+				  display.setColor(row, col, new Color(180, 225, 0));
 			  }
 			  else
 			  {
@@ -86,20 +96,12 @@ public class SandLab
   //causes one random particle in grid to maybe do something.
   public void step()
   {
-    //Remember, you need to access both row and column to specify a spot in the array
-    //The scalar refers to how big the value could be
-    //int someRandom = (int) (Math.random() * scalar)
-    //remember that you need to watch for the edges of the array
+
 	int randRow = (int) (Math.random() * (grid.length - 1));
 	int randCol = (int) (Math.random() * grid[0].length);
-	//SAND FALLING
-	if (grid[randRow][randCol] == SAND && grid[randRow + 1][randCol] == EMPTY)
-	{
-		grid[randRow][randCol] = EMPTY;
-		grid[randRow + 1][randCol] = SAND;
-	}
+	int element = grid[randRow][randCol];
 	//SAND TURNING TO MUD
-	else if (grid[randRow][randCol] == SAND || grid[randRow][randCol] == MUD)
+	if (element == SAND || element == MUD)
 	{
 		if(grid[randRow + 1][randCol] == WATER)
 		{
@@ -107,15 +109,39 @@ public class SandLab
 			grid[randRow + 1][randCol] = MUD;
 		}
 	}
-	//MUD FALLING
-	if(grid[randRow][randCol] == MUD && grid[randRow + 1][randCol] == EMPTY)
+	//GRASS FALLING THROUGH WATER
+	if (element == GRASS)
 	{
-		grid[randRow][randCol] = EMPTY;
-		grid[randRow + 1][randCol] = MUD;
+		if(grid[randRow + 1][randCol] == WATER)
+		{
+			grid[randRow][randCol] = WATER;
+			grid[randRow + 1][randCol] = GRASS;
+		}
+	}
+	//GRASS GROWING
+	if (element == GRASS && randRow != 0 && (grid[randRow - 1][randCol] == EMPTY || grid[randRow - 1][randCol] == WATER))
+	{
+		//if ((int)Math.random() * 2 == 1)
+		if ((int)(Math.random() * 100) == 1)
+		{
+			if(mudUnderMe(randRow, randCol))
+			{
+				grid[randRow - 1][randCol] = GRASS;
+			}
+		}
+	}
+	//MUD/SAND/GRASS FALLING
+	if(element == MUD || element == GRASS || element == SAND)
+	{
+		if(grid[randRow + 1][randCol] == EMPTY)
+		{
+			grid[randRow][randCol] = EMPTY;
+			grid[randRow + 1][randCol] = element;
+		}
 	}
 	
     //WATER FALLING
-	if (grid[randRow][randCol] == WATER)
+	if (element == WATER)
 	{
 		
 		int randDirection = (int)(Math.random() * 3);
@@ -151,7 +177,22 @@ public class SandLab
     
 	
   }
-  
+  public boolean mudUnderMe(int startRow, int col)
+  {
+	  for(int row = startRow; row < grid.length; row++)
+	  {
+		  if (grid[row][col] == MUD)
+		  {
+			  grid[row][col] = SAND;
+			  return true;
+		  }
+		  if (grid[row][col] == EMPTY || grid[row][col] == METAL)
+		  {
+			  return false;
+		  }
+	  }
+	  return false;
+  }
   //do not modify this method!
   public void run()
   {
