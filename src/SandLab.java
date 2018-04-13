@@ -11,7 +11,8 @@ public class SandLab
   public static final int WATER = 3;
   public static final int MUD = 4;
   public static final int GRASS = 5;
-  public static final int CLEAR = 6;
+  public static final int STEAM = 6;
+  public static final int CLEAR = 7;
   
   //do not add any more fields below
   private int[][] grid;
@@ -28,7 +29,7 @@ public class SandLab
     String[] names;
     // Change this value to add more buttons
     //Step 4,6
-    names = new String[7];
+    names = new String[8];
     //Each value needs a name for the button
     names[EMPTY] = "Erase";
     names[METAL] = "Metal";
@@ -36,6 +37,7 @@ public class SandLab
     names[WATER] = "Water";
     names[MUD] = "Mud";
     names[GRASS] = "Grass";
+    names[STEAM] = "Steam";
     names[CLEAR] = "CLEAR ALL";
     
     
@@ -88,6 +90,10 @@ public class SandLab
 			  else if (element == GRASS)
 			  {
 				  display.setColor(row, col, new Color(180, 225, 0));
+			  }
+			  else if (element == STEAM)
+			  {
+				  display.setColor(row, col, Color.LIGHT_GRAY);
 			  }
 			  else
 			  {
@@ -169,6 +175,32 @@ public class SandLab
 		{
 			grid[randRow][randCol] = EMPTY;
 			grid[randRow + 1][randCol] = WATER;
+		}
+		
+	}
+	//STEAM FLOATING
+	if (element == STEAM)
+	{
+		
+		int randDirection = (int)(Math.random() * 3);
+		
+		//left
+		if (randDirection == 0 && randCol != 0 && grid[randRow][randCol -1] == EMPTY)
+		{
+			grid[randRow][randCol] = EMPTY;
+			grid[randRow][randCol -1] = STEAM;
+		}
+		//right
+		else if(randDirection == 1 && randCol + 1 < grid[0].length && grid[randRow][randCol + 1] == EMPTY)
+		{
+			grid[randRow][randCol] = EMPTY;
+			grid[randRow][randCol + 1] = STEAM;
+		}
+		//up
+		else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] == EMPTY)
+		{
+			grid[randRow][randCol] = EMPTY;
+			grid[randRow - 1][randCol] = STEAM;
 		}
 		
 	}
