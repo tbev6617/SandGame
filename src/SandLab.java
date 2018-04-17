@@ -11,7 +11,7 @@ public class SandLab
   public static final int WATER = 3;
   public static final int MUD = 4;
   public static final int GRASS = 5;
-  public static final int STEAM = 6;
+  public static final int CLOUD = 6;
   public static final int CLEAR = 7;
   
   //do not add any more fields below
@@ -37,7 +37,7 @@ public class SandLab
     names[WATER] = "Water";
     names[MUD] = "Mud";
     names[GRASS] = "Grass";
-    names[STEAM] = "Steam";
+    names[CLOUD] = "Cloud";
     names[CLEAR] = "CLEAR ALL";
     
     
@@ -91,7 +91,7 @@ public class SandLab
 			  {
 				  display.setColor(row, col, new Color(180, 225, 0));
 			  }
-			  else if (element == STEAM)
+			  else if (element == CLOUD)
 			  {
 				  display.setColor(row, col, Color.LIGHT_GRAY);
 			  }
@@ -122,6 +122,14 @@ public class SandLab
 			grid[randRow + 1][randCol] = MUD;
 		}
 	}
+	//MUD SPREADING
+	if(grid[randRow][randCol] == MUD || grid[randRow][randCol] == WATER)
+	{
+		if(grid[randRow + 1][randCol] == SAND)
+		{
+			grid[randRow + 1][randCol] = MUD;
+		}
+	}
 	//GRASS FALLING THROUGH WATER
 	if (element == GRASS)
 	{
@@ -134,11 +142,20 @@ public class SandLab
 	//GRASS GROWING
 	if (element == GRASS && randRow != 0 && (grid[randRow - 1][randCol] == EMPTY || grid[randRow - 1][randCol] == WATER))
 	{
+		//GROW GRASS
 		if ((int)(Math.random() * 100) == 1)
 		{
 			if(mudUnderMe(randRow, randCol))
 			{
 				grid[randRow - 1][randCol] = GRASS;
+			}
+		}
+		//HYDRATE SAND
+		if(grid[randRow - 1][randCol] == WATER)
+		{
+			if (hydrateSand(randRow, randCol))
+			{
+				grid[randRow - 1][randCol] = EMPTY;
 			}
 		}
 	}
@@ -178,8 +195,8 @@ public class SandLab
 		}
 		
 	}
-	//STEAM FLOATING
-	if (element == STEAM)
+	//CLOUD FLOATING
+	if (element == CLOUD)
 	{
 		
 		int randDirection = (int)(Math.random() * 3);
@@ -188,32 +205,26 @@ public class SandLab
 		if (randDirection == 0 && randCol != 0 && grid[randRow][randCol -1] == EMPTY)
 		{
 			grid[randRow][randCol] = EMPTY;
-			grid[randRow][randCol -1] = STEAM;
+			grid[randRow][randCol -1] = CLOUD;
 		}
 		//right
 		else if(randDirection == 1 && randCol + 1 < grid[0].length && grid[randRow][randCol + 1] == EMPTY)
 		{
 			grid[randRow][randCol] = EMPTY;
-			grid[randRow][randCol + 1] = STEAM;
+			grid[randRow][randCol + 1] = CLOUD;
 		}
 		//up
-		else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] == EMPTY)
+		else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] != METAL)
 		{
-			grid[randRow][randCol] = EMPTY;
-			grid[randRow - 1][randCol] = STEAM;
+			grid[randRow][randCol] = grid[randRow - 1][randCol];
+			grid[randRow - 1][randCol] = CLOUD;
 		}
-		
-	}
-	//MUD SPREADING
-	if(grid[randRow][randCol] == MUD || grid[randRow][randCol] == WATER)
-	{
-		if(grid[randRow + 1][randCol] == SAND)
+		//raining
+		if(grid[randRow + 1][randCol] != CLOUD && isPartCloud(randRow, randCol) && (int)(Math.random() * 1500) == 1)
 		{
-			grid[randRow + 1][randCol] = MUD;
+			grid[randRow][randCol] = WATER;
 		}
 	}
-    
-	
   }
   public boolean mudUnderMe(int startRow, int col)
   {
@@ -224,12 +235,43 @@ public class SandLab
 			  grid[row][col] = SAND;
 			  return true;
 		  }
-		  if (grid[row][col] == EMPTY || grid[row][col] == METAL)
+		  if (grid[row][col] == METAL)
 		  {
 			  return false;
 		  }
 	  }
 	  return false;
+  }
+  public boolean hydrateSand(int startRow, int col)
+  {
+	  for(int row = startRow; row < grid.length; row++)
+	  {
+		  if (grid[row][col] == SAND)
+		  {
+			  grid[row][col] = MUD;
+			  return true;
+		  }
+		  if (grid[row][col] == METAL)
+		  {
+			  return false;
+		  }
+	  }
+	  return false;
+  }
+  public boolean isPartCloud(int startRow, int col)
+  {
+	  for(int row = startRow; row > 0; row --)
+	  {
+		  if(grid[row][col] == METAL)
+		  {
+			  return true;
+		  }
+		  if(grid[row][col] == EMPTY)
+		  {
+			  return false;
+		  }
+	  }
+	  return true;
   }
   //do not modify this method!
   public void run()
