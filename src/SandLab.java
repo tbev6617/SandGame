@@ -240,7 +240,7 @@ public class SandLab
 			grid[randRow - 1][randCol] = CLOUD;
 		}
 		//CLOUD RAINING
-		if(randRow < grid.length - 1 && grid[randRow + 1][randCol] != CLOUD && isPartCloud(randRow, randCol) && (int)(Math.random() * 1000) == 1)
+		if(randRow < grid.length - 1 && grid[randRow + 1][randCol] != CLOUD && isPartCloud(randRow, randCol) && (int)(Math.random() * 500) == 1)
 		{
 			grid[randRow][randCol] = WATER;
 		}
