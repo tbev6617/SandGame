@@ -10,11 +10,12 @@ public class SandLab
   public static final int SAND = 2;
   public static final int WATER = 3;
   public static final int MUD = 4;
-  public static final int CLOUD = 5;
-  public static final int GRASS = 6;
+  public static final int CLOUD = 6;
+  public static final int GRASS = 5;
   public static final int STOVE = 7;
   public static final int FIRE = 8;
-  public static final int CLEAR = 9;
+  public static final int BOMB = 9;
+  public static final int CLEAR = 10;
   
   //do not add any more fields below
   private int[][] grid;
@@ -31,7 +32,7 @@ public class SandLab
     String[] names;
     // Change this value to add more buttons
     //Step 4,6
-    names = new String[10];
+    names = new String[11];
     //Each value needs a name for the button
     names[EMPTY] = "Erase";
     names[METAL] = "Metal";
@@ -42,6 +43,7 @@ public class SandLab
     names[CLOUD] = "Cloud";
     names[STOVE] = "Stove";
     names[FIRE] = "Fire";
+    names[BOMB] = "Bomb";
     names[CLEAR] = "CLEAR ALL";
     
     
@@ -114,6 +116,10 @@ public class SandLab
 				  {
 					  display.setColor(row, col, Color.ORANGE);
 				  }
+			  }
+			  else if(element == BOMB)
+			  {
+				  display.setColor(row, col, Color.BLACK);
 			  }
 			  else
 			  {
@@ -356,6 +362,46 @@ public class SandLab
 			grid[randRow - 1][randCol] = FIRE;
 		}
 	}
+	//BOMB EXPLODES
+	if (element == BOMB)
+	{
+		//left
+		if (randCol != 0)
+		{
+			if(grid[randRow][randCol -1] == FIRE || grid[randRow][randCol -1] == STOVE)
+			{
+				explode(randRow, randCol);
+			}
+		}
+		//right
+		else if(randCol + 1 < grid[0].length)
+		{
+			if(grid[randRow][randCol + 1] == FIRE || grid[randRow][randCol + 1] == STOVE)
+			{
+				explode(randRow, randCol);
+			}
+		}
+		//up
+		else if(randRow > 0)
+		{
+			if(grid[randRow - 1][randCol] == FIRE || grid[randRow - 1][randCol] == STOVE)
+			{
+				explode(randRow, randCol);
+			}
+		}
+		//down
+		else if(randRow < grid.length - 1)
+		{
+			if(grid[randRow + 1][randCol] == FIRE || grid[randRow + 1][randCol] == STOVE)
+			{
+				explode(randRow, randCol);
+			}
+		}
+	}
+  }
+  public void explode(int startRow, int startCol)
+  {
+	  
   }
   public boolean mudUnderMe(int startRow, int col)
   {
