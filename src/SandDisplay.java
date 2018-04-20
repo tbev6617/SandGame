@@ -60,7 +60,7 @@ public class SandDisplay extends JComponent implements MouseListener,
     
     buttons[tool].setSelected(true);
    
-    slider = new JSlider(JSlider.HORIZONTAL, 0, 20, 5);
+    slider = new JSlider(JSlider.HORIZONTAL, 0, 25, 5);
     slider.addChangeListener(this);
     slider.setMajorTickSpacing(5);
     slider.setPaintTicks(true);

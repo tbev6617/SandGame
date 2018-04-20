@@ -41,7 +41,7 @@ public class SandLab
     names[MUD] = "Mud";
     names[GRASS] = "Grass";
     names[CLOUD] = "Cloud";
-    names[STOVE] = "Stove";
+    names[STOVE] = "Furnace";
     names[FIRE] = "Fire";
     names[BOMB] = "Bomb";
     names[CLEAR] = "CLEAR ALL";
@@ -49,6 +49,13 @@ public class SandLab
     
     //1. Add code to initialize the data member grid with same dimensions
     grid = new int[numRows][numCols];
+    for(int row = 0; row < numRows; row++)
+    {
+    	for(int col = 0; col < numCols; col++)
+        {
+        	grid[row][col] = EMPTY;
+        }
+    }
     
     display = new SandDisplay("Sand Game", numRows, numCols, names);
   }
@@ -240,7 +247,7 @@ public class SandLab
 			grid[randRow][randCol + 1] = CLOUD;
 		}
 		//up
-		else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] != METAL && grid[randRow - 1][randCol] != STOVE)
+		else if(randDirection == 2 && randRow != 0 && (grid[randRow - 1][randCol] == WATER || grid[randRow - 1][randCol] == EMPTY))
 		{
 			grid[randRow][randCol] = grid[randRow - 1][randCol];
 			grid[randRow - 1][randCol] = CLOUD;
@@ -299,67 +306,75 @@ public class SandLab
 	//FIRE STUFF
 	if(element == FIRE)
 	{
-		//DISAPPEAR
-		if((int)(Math.random() * 20) == 1)
-		{
-			grid[randRow][randCol] = EMPTY;
-		}
 		//BURN GRASS
+		boolean grassBurned = false;
 		int randDirection = (int)(Math.random() * 4);
 		
 		//left
-		if (randDirection == 0 && randCol != 0)
+		if (randCol != 0)
 		{
 			if(grid[randRow][randCol - 1] == GRASS)
 			{
 				grid[randRow][randCol - 1] = FIRE;
+				grassBurned = true;
 			}
 		}
 		
 		//right
-		else if(randDirection == 1 && randCol + 1 < grid[0].length)
+		if(randCol + 1 < grid[0].length)
 		{
 			if(grid[randRow][randCol + 1] == GRASS)
 			{
 				grid[randRow][randCol + 1] = FIRE;
+				grassBurned = true;
 			}
 		}
 		//up
-		else if(randDirection == 2 && randRow > 0)
+		if(randRow > 0)
 		{
 			if(grid[randRow - 1][randCol] == GRASS)
 			{
 				grid[randRow - 1][randCol] = FIRE;
+				grassBurned = true;
 			}
 		}
 		//down
-		else if(randDirection == 3 && randRow < grid.length - 1)
+		if(randRow < grid.length - 1)
 		{
 			if(grid[randRow + 1][randCol] == GRASS)
 			{
 				grid[randRow + 1][randCol] = FIRE;
+				grassBurned = true;
 			}
 		}
+		//DISAPPEAR
+		if(grassBurned == false && (int)(Math.random() * 30) == 1)
+		{
+			grid[randRow][randCol] = EMPTY;
+		}
 		//MOVE LIKE A CLOUD
-		randDirection = (int)(Math.random() * 3);
-			
-		//left
-		if (randDirection == 0 && randCol != 0 && grid[randRow][randCol -1] == EMPTY)
+		else
 		{
-			grid[randRow][randCol] = EMPTY;
-			grid[randRow][randCol -1] = FIRE;
-		}
-		//right
-		else if(randDirection == 1 && randCol + 1 < grid[0].length && grid[randRow][randCol + 1] == EMPTY)
-		{
-			grid[randRow][randCol] = EMPTY;
-			grid[randRow][randCol + 1] = FIRE;
-		}
-		//up
-		else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] != METAL && grid[randRow - 1][randCol] != STOVE)
-		{
-			grid[randRow][randCol] = grid[randRow - 1][randCol];
-			grid[randRow - 1][randCol] = FIRE;
+			randDirection = (int)(Math.random() * 3);
+				
+			//left
+			if (randDirection == 0 && randCol != 0 && grid[randRow][randCol -1] == EMPTY)
+			{
+				grid[randRow][randCol] = EMPTY;
+				grid[randRow][randCol -1] = FIRE;
+			}
+			//right
+			else if(randDirection == 1 && randCol + 1 < grid[0].length && grid[randRow][randCol + 1] == EMPTY)
+			{
+				grid[randRow][randCol] = EMPTY;
+				grid[randRow][randCol + 1] = FIRE;
+			}
+			//up
+			else if(randDirection == 2 && randRow != 0 && grid[randRow - 1][randCol] == EMPTY)
+			{
+				grid[randRow][randCol] = grid[randRow - 1][randCol];
+				grid[randRow - 1][randCol] = FIRE;
+			}
 		}
 	}
 	//BOMB EXPLODES
@@ -374,7 +389,7 @@ public class SandLab
 			}
 		}
 		//right
-		else if(randCol + 1 < grid[0].length)
+		if(randCol + 1 < grid[0].length)
 		{
 			if(grid[randRow][randCol + 1] == FIRE || grid[randRow][randCol + 1] == STOVE)
 			{
@@ -382,7 +397,7 @@ public class SandLab
 			}
 		}
 		//up
-		else if(randRow > 0)
+		if(randRow > 0)
 		{
 			if(grid[randRow - 1][randCol] == FIRE || grid[randRow - 1][randCol] == STOVE)
 			{
@@ -390,7 +405,7 @@ public class SandLab
 			}
 		}
 		//down
-		else if(randRow < grid.length - 1)
+		if(randRow < grid.length - 1)
 		{
 			if(grid[randRow + 1][randCol] == FIRE || grid[randRow + 1][randCol] == STOVE)
 			{
@@ -401,8 +416,19 @@ public class SandLab
   }
   public void explode(int startRow, int startCol)
   {
-	  
+	  grid[startRow][startCol] = FIRE;
+	  for(int col = Math.max(startCol - 6, 0); col < Math.min(startCol + 6, grid[0].length); col++)
+	  {
+		  for(int row = Math.max(startRow - 6, 0); row < Math.min(startRow + 6, grid.length); row++)
+		  {
+			  if(grid[row][col] != WATER && grid[row][col] != BOMB)
+			  {
+				  grid[row][col] = FIRE;
+			  }
+		  }
+	  }
   }
+
   public boolean mudUnderMe(int startRow, int col)
   {
 	  for(int row = startRow; row < grid.length; row++)
