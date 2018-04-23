@@ -64,14 +64,7 @@ public class SandLab
   private void locationClicked(int row, int col, int tool)
   {
     //2. Assign the values associated with the parameters to the grid
-	  if (tool == CLEAR)
-	  {
-		  grid = new int[grid.length][grid[0].length];
-	  }
-	  else
-	  {
 		  grid[row][col] = tool;
-	  }
   }
 
   //copies each element of grid into the display
@@ -484,6 +477,10 @@ public class SandLab
       for (int i = 0; i < display.getSpeed(); i++)
       {
         step();
+      }
+      if(display.getTool() == CLEAR)
+      {
+    	  grid = new int[grid.length][grid[0].length];
       }
       updateDisplay();
       display.repaint();
