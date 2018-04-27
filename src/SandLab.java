@@ -299,7 +299,7 @@ public class SandLab
 	//FIRE STUFF
 	if(element == FIRE)
 	{
-		//BURN GRASS
+		//BURN GRASS or HEAT METAL
 		boolean grassBurned = false;
 		int randDirection = (int)(Math.random() * 4);
 		
@@ -329,6 +329,11 @@ public class SandLab
 			{
 				grid[randRow - 1][randCol] = FIRE;
 				grassBurned = true;
+			}
+			
+			if(grid[randRow - 1][randCol] == METAL && (int)(Math.random() * 200) == 1)
+			{
+				grid[randRow - 1][randCol] = STOVE;
 			}
 		}
 		//down
