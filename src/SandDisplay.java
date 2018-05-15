@@ -65,8 +65,8 @@ public class SandDisplay extends JComponent implements MouseListener,
     slider.setMajorTickSpacing(5);
     slider.setPaintTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-    labelTable.put(0, new JLabel("Slow"));
-    labelTable.put(25, new JLabel("Fast"));
+    labelTable.put(0, new JLabel("SLOW"));
+    labelTable.put(25, new JLabel("FAST"));
     slider.setLabelTable(labelTable);
     slider.setPaintLabels(true);
 
@@ -177,6 +177,10 @@ public class SandDisplay extends JComponent implements MouseListener,
   //speed of 100 returns 10^6
   private int computeSpeed(int sliderValue)
   {
+	if(sliderValue == 0)
+	{
+		return 0;
+	}
     return (int)Math.pow(10, 0.05 * sliderValue + 3);
   }
 }
