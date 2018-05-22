@@ -15,7 +15,8 @@ public class SandLab
   public static final int STOVE = 7;
   public static final int FIRE = 8;
   public static final int BOMB = 9;
-  public static final int CLEAR = 10;
+  public static final int MOLD = 10;
+  public static final int CLEAR = 11;
   
   //do not add any more fields below
   private int[][] grid;
@@ -32,7 +33,7 @@ public class SandLab
     String[] names;
     // Change this value to add more buttons
     //Step 4,6
-    names = new String[11];
+    names = new String[12];
     //Each value needs a name for the button
     names[EMPTY] = "Erase";
     names[METAL] = "Metal";
@@ -44,6 +45,7 @@ public class SandLab
     names[STOVE] = "Furnace";
     names[FIRE] = "Fire";
     names[BOMB] = "Bomb";
+    names[MOLD] = "Virus";
     names[CLEAR] = "CLEAR ALL";
     
     
@@ -70,8 +72,7 @@ public class SandLab
   //copies each element of grid into the display
   public void updateDisplay()
   {
-      //Step 3
-	  //Hint - use a nested for loop
+      
 	  for(int row = 0; row < grid.length; row++)
 	  {
 		  for(int col = 0; col < grid[0].length; col++)
@@ -120,6 +121,21 @@ public class SandLab
 			  else if(element == BOMB)
 			  {
 				  display.setColor(row, col, Color.BLACK);
+			  }
+			  else if(element == MOLD)
+			  {
+				  if((row + col) * col % 3 == 0)
+				  {
+					  display.setColor(row, col, new Color(140, 180, 0));
+				  }
+				  else if((row + col) * col % 2 == 0)
+				  {
+					  display.setColor(row, col, new Color(190, 245, 155));
+				  }
+				  else
+				  {
+					  display.setColor(row, col, new Color(90, 200, 0));
+				  }
 			  }
 			  else
 			  {
@@ -306,7 +322,7 @@ public class SandLab
 		//left
 		if (randCol != 0)
 		{
-			if(grid[randRow][randCol - 1] == GRASS)
+			if(grid[randRow][randCol - 1] == GRASS || grid[randRow][randCol - 1] == MOLD)
 			{
 				grid[randRow][randCol - 1] = FIRE;
 				grassBurned = true;
@@ -316,7 +332,7 @@ public class SandLab
 		//right
 		if(randCol + 1 < grid[0].length)
 		{
-			if(grid[randRow][randCol + 1] == GRASS)
+			if(grid[randRow][randCol + 1] == GRASS || grid[randRow][randCol + 1] == MOLD)
 			{
 				grid[randRow][randCol + 1] = FIRE;
 				grassBurned = true;
@@ -325,7 +341,7 @@ public class SandLab
 		//up
 		if(randRow > 0)
 		{
-			if(grid[randRow - 1][randCol] == GRASS)
+			if(grid[randRow - 1][randCol] == GRASS || grid[randRow - 1][randCol] == MOLD)
 			{
 				grid[randRow - 1][randCol] = FIRE;
 				grassBurned = true;
@@ -339,7 +355,7 @@ public class SandLab
 		//down
 		if(randRow < grid.length - 1)
 		{
-			if(grid[randRow + 1][randCol] == GRASS)
+			if(grid[randRow + 1][randCol] == GRASS || grid[randRow + 1][randCol] == MOLD)
 			{
 				grid[randRow + 1][randCol] = FIRE;
 				grassBurned = true;
@@ -411,6 +427,53 @@ public class SandLab
 			}
 		}
 	}
+	//MOLD GROWS
+	else if(element == MOLD)
+	{
+		if((int)(Math.random() * 6) == 0)
+		{
+			//left
+			if (randCol != 0)
+			{
+				if(consumable(grid[randRow][randCol - 1]))
+				{
+					grid[randRow][randCol - 1] = MOLD;
+				}
+			}
+			//right
+			if(randCol + 1 < grid[0].length)
+			{
+				if(consumable(grid[randRow][randCol + 1]))
+				{
+					grid[randRow][randCol + 1] = MOLD;
+				}
+			}
+			//up
+			if(randRow > 0)
+			{
+				if(consumable(grid[randRow - 1][randCol]))
+				{
+					grid[randRow - 1][randCol] = MOLD;
+				}
+			}
+			//down
+			if(randRow < grid.length - 1)
+			{
+				if(consumable(grid[randRow + 1][randCol]))
+				{
+					grid[randRow + 1][randCol] = MOLD;
+				}
+			}
+		}
+	}
+  }
+  public boolean consumable(int element) 
+  {
+	  if(element == FIRE || element == BOMB || element == EMPTY || element == METAL || element == STOVE)
+	  {
+		  return false;
+	  }
+	  return true;
   }
   public void explode(int startRow, int startCol)
   {

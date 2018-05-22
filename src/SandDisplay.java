@@ -109,6 +109,7 @@ public class SandDisplay extends JComponent implements MouseListener,
     g.setColor(color);
     g.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
   }
+ 
   
   public void mouseClicked(MouseEvent e)
   {
