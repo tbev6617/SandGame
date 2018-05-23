@@ -15,7 +15,7 @@ public class SandLab
   public static final int STOVE = 7;
   public static final int FIRE = 8;
   public static final int BOMB = 9;
-  public static final int MOLD = 10;
+  public static final int VIRUS = 10;
   public static final int CLEAR = 11;
   
   //do not add any more fields below
@@ -45,7 +45,7 @@ public class SandLab
     names[STOVE] = "Furnace";
     names[FIRE] = "Fire";
     names[BOMB] = "Bomb";
-    names[MOLD] = "Virus";
+    names[VIRUS] = "Virus";
     names[CLEAR] = "CLEAR ALL";
     
     
@@ -84,7 +84,18 @@ public class SandLab
 			  }
 			  else if (element == SAND)
 			  {
-				  display.setColor(row, col, new Color(220, 160, 90));
+				  if((row + col) * row % 3 == 0 && row != col)
+				  {
+					  display.setColor(row, col, new Color(220, 160, 90));
+				  }
+				  else if((row + col) * row % 2 == 0)
+				  {
+					  display.setColor(row, col, new Color(185, 135, 75));
+				  }
+				  else
+				  {
+					  display.setColor(row, col, new Color(180, 120, 60));
+				  }
 			  }
 			  else if (element == WATER)
 			  {
@@ -92,11 +103,58 @@ public class SandLab
 			  }
 			  else if (element == MUD)
 			  {
-				  display.setColor(row, col, new Color(100, 70, 35));
+				  if((row + col) * row % 3 == 0 && row != col)
+				  {
+					  display.setColor(row, col, new Color(85, 60, 30));
+				  }
+				  else if((row + col) * row % 2 == 0)
+				  {
+					  display.setColor(row, col, new Color(80, 50, 15));
+				  }
+				  else
+				  {
+					  display.setColor(row, col, new Color(100, 70, 35));
+				  }
 			  }
 			  else if (element == GRASS)
 			  {
-				  display.setColor(row, col, new Color(180, 225, 0));
+//				  if(grassUnderMe(row, col) > 35)
+//				  {
+//					  display.setColor(row, col, new Color(210, 170, 120));
+//				  }
+//				  else if(grassUnderMe(row, col) > 28)
+//				  {
+//					  display.setColor(row, col, new Color(255, 225, 85));
+//				  }
+//				  else if(grassUnderMe(row, col) > 21)
+//				  {
+//					  display.setColor(row, col, new Color(215, 240, 70));
+//				  }
+//				  else if(grassUnderMe(row, col) > 14)
+//				  {
+//					  display.setColor(row, col, new Color(180, 225, 0));
+//				  }
+//				  else if(grassUnderMe(row, col) > 7)
+//				  {
+//					  display.setColor(row, col, new Color(75, 160, 35));
+//				  }
+//				  else if(grassUnderMe(row, col) > 0)
+//				  {
+//					  display.setColor(row, col, new Color(35,140,35));
+//				  }
+//				  else
+//				  {
+//					  display.setColor(row, col, new Color(35, 95, 10));
+//				  }
+				  if(grassUnderMe(row, col) == 0)
+				  {
+					  display.setColor(row, col, new Color(35,140,35));
+				  }
+				  else
+				  {
+					  display.setColor(row, col, new Color(75, 160, 35));
+				  }
+				  
 			  }
 			  else if (element == CLOUD)
 			  {
@@ -122,7 +180,7 @@ public class SandLab
 			  {
 				  display.setColor(row, col, Color.BLACK);
 			  }
-			  else if(element == MOLD)
+			  else if(element == VIRUS)
 			  {
 				  if((row + col) * col % 3 == 0)
 				  {
@@ -275,13 +333,13 @@ public class SandLab
 		{
 			grid[randRow - 1][randCol] = CLOUD;
 		}
-		//BURN GRASS
+		//BURN GRASS AND VIRUS
 		int randDirection = (int)(Math.random() * 4);
 		
 		//left
 		if (randDirection == 0 && randCol != 0)
 		{
-			if(grid[randRow][randCol -1] == GRASS)
+			if(grid[randRow][randCol -1] == GRASS || grid[randRow][randCol + 1] == VIRUS)
 			{
 				grid[randRow][randCol -1] = FIRE;
 			}
@@ -290,7 +348,7 @@ public class SandLab
 		//right
 		else if(randDirection == 1 && randCol + 1 < grid[0].length)
 		{
-			if(grid[randRow][randCol + 1] == GRASS)
+			if(grid[randRow][randCol + 1] == GRASS || grid[randRow][randCol + 1] == VIRUS)
 			{
 				grid[randRow][randCol + 1] = FIRE;
 			}
@@ -298,7 +356,7 @@ public class SandLab
 		//up
 		else if(randDirection == 2 && randRow > 0)
 		{
-			if(grid[randRow - 1][randCol] == GRASS)
+			if(grid[randRow - 1][randCol] == GRASS || grid[randRow - 1][randCol] == VIRUS)
 			{
 				grid[randRow - 1][randCol] = FIRE;
 			}
@@ -306,7 +364,7 @@ public class SandLab
 		//down
 		else if(randDirection == 3 && randRow < grid.length - 1)
 		{
-			if(grid[randRow + 1][randCol] == GRASS)
+			if(grid[randRow + 1][randCol] == GRASS || grid[randRow + 1][randCol] == VIRUS)
 			{
 				grid[randRow + 1][randCol] = FIRE;
 			}
@@ -322,7 +380,7 @@ public class SandLab
 		//left
 		if (randCol != 0)
 		{
-			if(grid[randRow][randCol - 1] == GRASS || grid[randRow][randCol - 1] == MOLD)
+			if(grid[randRow][randCol - 1] == GRASS || grid[randRow][randCol - 1] == VIRUS)
 			{
 				grid[randRow][randCol - 1] = FIRE;
 				grassBurned = true;
@@ -332,7 +390,7 @@ public class SandLab
 		//right
 		if(randCol + 1 < grid[0].length)
 		{
-			if(grid[randRow][randCol + 1] == GRASS || grid[randRow][randCol + 1] == MOLD)
+			if(grid[randRow][randCol + 1] == GRASS || grid[randRow][randCol + 1] == VIRUS)
 			{
 				grid[randRow][randCol + 1] = FIRE;
 				grassBurned = true;
@@ -341,7 +399,7 @@ public class SandLab
 		//up
 		if(randRow > 0)
 		{
-			if(grid[randRow - 1][randCol] == GRASS || grid[randRow - 1][randCol] == MOLD)
+			if(grid[randRow - 1][randCol] == GRASS || grid[randRow - 1][randCol] == VIRUS)
 			{
 				grid[randRow - 1][randCol] = FIRE;
 				grassBurned = true;
@@ -355,7 +413,7 @@ public class SandLab
 		//down
 		if(randRow < grid.length - 1)
 		{
-			if(grid[randRow + 1][randCol] == GRASS || grid[randRow + 1][randCol] == MOLD)
+			if(grid[randRow + 1][randCol] == GRASS || grid[randRow + 1][randCol] == VIRUS)
 			{
 				grid[randRow + 1][randCol] = FIRE;
 				grassBurned = true;
@@ -427,8 +485,8 @@ public class SandLab
 			}
 		}
 	}
-	//MOLD GROWS
-	else if(element == MOLD)
+	//VIRUS GROWS
+	else if(element == VIRUS)
 	{
 		if((int)(Math.random() * 6) == 0)
 		{
@@ -437,7 +495,7 @@ public class SandLab
 			{
 				if(consumable(grid[randRow][randCol - 1]))
 				{
-					grid[randRow][randCol - 1] = MOLD;
+					grid[randRow][randCol - 1] = VIRUS;
 				}
 			}
 			//right
@@ -445,7 +503,7 @@ public class SandLab
 			{
 				if(consumable(grid[randRow][randCol + 1]))
 				{
-					grid[randRow][randCol + 1] = MOLD;
+					grid[randRow][randCol + 1] = VIRUS;
 				}
 			}
 			//up
@@ -453,7 +511,7 @@ public class SandLab
 			{
 				if(consumable(grid[randRow - 1][randCol]))
 				{
-					grid[randRow - 1][randCol] = MOLD;
+					grid[randRow - 1][randCol] = VIRUS;
 				}
 			}
 			//down
@@ -461,7 +519,7 @@ public class SandLab
 			{
 				if(consumable(grid[randRow + 1][randCol]))
 				{
-					grid[randRow + 1][randCol] = MOLD;
+					grid[randRow + 1][randCol] = VIRUS;
 				}
 			}
 		}
@@ -536,6 +594,23 @@ public class SandLab
 		  }
 	  }
 	  return true;
+  }
+  public int grassUnderMe(int startRow, int col)
+  {
+	  int count = 0;
+	  for(int row = startRow + 1; row < grid.length; row++)
+	  {
+		  if(grid[row][col] == GRASS)
+		  {
+			  count++;
+		  }
+		  else if(grid[row][col] != EMPTY)
+		  {
+			  return count;
+		  }
+	  }
+	  return count;
+		  
   }
   //do not modify this method!
   public void run()
