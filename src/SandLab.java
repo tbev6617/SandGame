@@ -1,4 +1,5 @@
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.*;
 
 public class SandLab
@@ -9,14 +10,15 @@ public class SandLab
   public static final int METAL = 1;
   public static final int SAND = 2;
   public static final int WATER = 3;
-  public static final int MUD = 4;
-  public static final int CLOUD = 6;
-  public static final int GRASS = 5;
+  public static final int GRASS = 4;
+  public static final int FIRE = 5;
+  public static final int MUD = 6;
   public static final int STOVE = 7;
-  public static final int FIRE = 8;
+  public static final int CLOUD = 8;
   public static final int BOMB = 9;
   public static final int VIRUS = 10;
   public static final int CLEAR = 11;
+  private List<Integer> unlocked;
   
   //do not add any more fields below
   private int[][] grid;
@@ -39,15 +41,23 @@ public class SandLab
     names[METAL] = "Metal";
     names[SAND] = "Sand";
     names[WATER] = "Water";
-    names[MUD] = "Mud";
     names[GRASS] = "Grass";
-    names[CLOUD] = "Cloud";
-    names[STOVE] = "Furnace";
     names[FIRE] = "Fire";
-    names[BOMB] = "Bomb";
-    names[VIRUS] = "Virus";
+    names[BOMB] = "?";
+    names[VIRUS] = "?";
+    names[MUD] = "?";
+    names[STOVE] = "?";
+    names[CLOUD] = "?";
     names[CLEAR] = "CLEAR ALL";
     
+    unlocked = new ArrayList<Integer>();
+    unlocked.add(METAL);
+    unlocked.add(SAND);
+    unlocked.add(WATER);
+    unlocked.add(CLEAR);
+    unlocked.add(EMPTY);
+    unlocked.add(GRASS);
+    unlocked.add(FIRE);
     
     //1. Add code to initialize the data member grid with same dimensions
     grid = new int[numRows][numCols];
@@ -66,7 +76,10 @@ public class SandLab
   private void locationClicked(int row, int col, int tool)
   {
     //2. Assign the values associated with the parameters to the grid
+	  if(unlocked.contains(tool))
+	  {
 		  grid[row][col] = tool;
+	  }
   }
 
   //copies each element of grid into the display
@@ -78,6 +91,36 @@ public class SandLab
 		  for(int col = 0; col < grid[0].length; col++)
 		  {
 			  int element = grid[row][col];
+			  
+			  if(!unlocked.contains(element))
+			  {
+				  unlocked.add(element);
+				  String name = "ERROR LINE 97";
+				  if(element == MUD)
+				  {
+					  name = "Mud";
+				  }
+				  if(element == STOVE)
+				  {
+					  name = "Stove";
+				  }
+				  if(element == CLOUD)
+				  {
+					  name = "Cloud";
+				  }
+				  
+				  display.addButton(element, name);
+			  }
+			  if(unlocked.size() == 10)
+			  {
+				  unlocked.add(BOMB);
+				  display.addButton(BOMB, "Bomb");
+				  
+				  unlocked.add(VIRUS);
+				  display.addButton(VIRUS, "Virus");
+
+			  }
+			  
 			  if (element == METAL)
 			  {
 				  display.setColor(row, col, Color.GRAY);
@@ -146,13 +189,15 @@ public class SandLab
 //				  {
 //					  display.setColor(row, col, new Color(35, 95, 10));
 //				  }
+				  
+				  
 				  if(grassUnderMe(row, col) == 0)
 				  {
 					  display.setColor(row, col, new Color(35,140,35));
 				  }
 				  else
 				  {
-					  display.setColor(row, col, new Color(75, 160, 35));
+					  display.setColor(row, col, new Color(75, 155, 40));
 				  }
 				  
 			  }

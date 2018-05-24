@@ -18,8 +18,10 @@ public class SandDisplay extends JComponent implements MouseListener,
   private JButton[] buttons;
   private JSlider slider;
   private int speed;
+  private String[] buttonNames;
+  private JPanel buttonPanel;
   
-  public SandDisplay(String title, int numRows, int numCols, String[] buttonNames)
+  public SandDisplay(String title, int numRows, int numCols, String[] names)
   {
     this.numRows = numRows;
     this.numCols = numCols;
@@ -34,6 +36,7 @@ public class SandDisplay extends JComponent implements MouseListener,
     frame = new JFrame(title);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.PAGE_AXIS));
+    frame.setResizable(false);
     
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.LINE_AXIS));
@@ -44,10 +47,11 @@ public class SandDisplay extends JComponent implements MouseListener,
     addMouseMotionListener(this);
     topPanel.add(this);
     
-    JPanel buttonPanel = new JPanel();
+    buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
     topPanel.add(buttonPanel);
     
+    buttonNames = names;
     buttons = new JButton[buttonNames.length];
     
     for (int i = 0; i < buttons.length; i++)
@@ -183,5 +187,22 @@ public class SandDisplay extends JComponent implements MouseListener,
 		return 0;
 	}
     return (int)Math.pow(10, 0.05 * sliderValue + 3);
+  }
+  public void addButton(int element, String name)
+  {
+	  buttonNames[element] = name;
+	  for(int i = 0; i < buttons.length; i++)
+	  {
+		  buttonPanel.remove(buttons[i]);
+	  }
+	    
+	  for (int i = 0; i < buttons.length; i++)
+	  {
+		  buttons[i] = new JButton(buttonNames[i]);
+		  buttons[i].setActionCommand("" + i);
+		  buttons[i].addActionListener(this);
+		  buttonPanel.add(buttons[i]);
+	  }
+	  buttonPanel.validate();
   }
 }
