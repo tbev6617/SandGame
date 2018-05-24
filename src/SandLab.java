@@ -79,6 +79,16 @@ public class SandLab
 	  if(unlocked.contains(tool))
 	  {
 		  grid[row][col] = tool;
+		  
+		  if(unlocked.size() == 10)
+		  {
+			  unlocked.add(BOMB);
+			  display.addButton(BOMB, "Bomb");
+			  
+			  unlocked.add(VIRUS);
+			  display.addButton(VIRUS, "Virus");
+
+		  }
 	  }
   }
 
@@ -95,14 +105,15 @@ public class SandLab
 			  if(!unlocked.contains(element))
 			  {
 				  unlocked.add(element);
-				  String name = "ERROR LINE 97";
+				  String name = "ERROR";
+				  
 				  if(element == MUD)
 				  {
 					  name = "Mud";
 				  }
 				  if(element == STOVE)
 				  {
-					  name = "Stove";
+					  name = "Furnace";
 				  }
 				  if(element == CLOUD)
 				  {
@@ -110,15 +121,6 @@ public class SandLab
 				  }
 				  
 				  display.addButton(element, name);
-			  }
-			  if(unlocked.size() == 10)
-			  {
-				  unlocked.add(BOMB);
-				  display.addButton(BOMB, "Bomb");
-				  
-				  unlocked.add(VIRUS);
-				  display.addButton(VIRUS, "Virus");
-
 			  }
 			  
 			  if (element == METAL)
