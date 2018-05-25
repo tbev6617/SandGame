@@ -80,7 +80,7 @@ public class SandLab
 	  {
 		  grid[row][col] = tool;
 		  
-		  if(unlocked.size() == 10)
+		  if(tool == CLOUD && unlocked.size() == 10)
 		  {
 			  unlocked.add(BOMB);
 			  display.addButton(BOMB, "Bomb");
