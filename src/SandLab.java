@@ -386,7 +386,7 @@ public class SandLab
 		//left
 		if (randDirection == 0 && randCol != 0)
 		{
-			if(grid[randRow][randCol -1] == GRASS || grid[randRow][randCol + 1] == VIRUS)
+			if(grid[randRow][randCol -1] == GRASS || grid[randRow][randCol - 1] == VIRUS)
 			{
 				grid[randRow][randCol -1] = FIRE;
 			}
